@@ -748,8 +748,9 @@ class MapObject {
         let yMountain = null;
         let blocked = false;
         let o = Enum.Orientation.None;
-        let i: number, l: number, result: [boolean, number, Enum.Orientation];
-        for (i = 0, l = this.meshBoundingBox.length; i < l; i++) {
+        let i: number, result: [boolean, number, Enum.Orientation];
+        const l = this.meshBoundingBox?.length ?? 0;
+        for (i = 0; i < l; i++) {
             this.currentBoundingBox = this.meshBoundingBox[i];
             result = Manager.Collisions.checkRay(this.position, position, this, this.boundingBoxSettings.b[i]);
             if (result[1] !== null) {
@@ -771,7 +772,7 @@ class MapObject {
         if (!blocked && yMountain !== null) {
             position.setY(yMountain);
             this.updateBBPosition(position);
-            for (i = 0, l = this.meshBoundingBox.length; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 this.currentBoundingBox = this.meshBoundingBox[i];
                 result = Manager.Collisions.checkRay(this.position, 
                     position, this, this.boundingBoxSettings.b[i], true);
@@ -814,8 +815,8 @@ class MapObject {
      *  @returns {Vector3}
      */
     checkCollisionDetection(): boolean {
-        let i: number, l: number;
-        for (i = 0, l = this.meshBoundingBox.length; i < l; i++) {
+        const l = this.meshBoundingBox?.length ?? 0;
+        for (let i = 0; i < l; i++) {
             if (Manager.Collisions.obbVSobb(<CustomGeometry>this.meshBoundingBox
                 [i].geometry, <CustomGeometry>Manager.Collisions
                 .getBBBoxDetection(true).geometry))
@@ -922,9 +923,11 @@ class MapObject {
      *  @param {Vector3} position - Position to update
      */
     updateBBPosition(position: Vector3) {
-        for (let i = 0, l = this.meshBoundingBox.length; i < l; i++) {
-            this.updateMeshBBPosition(this.meshBoundingBox[i], this
-                .boundingBoxSettings.b[i], position);
+        if (this.meshBoundingBox) {
+            for (let i = 0, l = this.meshBoundingBox.length; i < l; i++) {
+                this.updateMeshBBPosition(this.meshBoundingBox[i], this
+                    .boundingBoxSettings.b[i], position);
+            }
         }
     }
 
@@ -973,7 +976,7 @@ class MapObject {
     move(orientation: Orientation, limit: number, angle: number, 
         isCameraOrientation: boolean): number[]
     {
-        if (this.removed) {
+        if (this.removed || !this.speed) {
             return [0, 0];
         }
 
