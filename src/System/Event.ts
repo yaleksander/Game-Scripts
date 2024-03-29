@@ -11,7 +11,6 @@
 
 import { Base } from "./Base";
 import { System, Datas } from "../index";
-import { Utils } from "../Common";
 
 /** @class
  *  An event that an object can react on.
@@ -48,7 +47,9 @@ class Event extends Base {
         let jsonReactions = json.r;
         this.reactions = {};
         for (let idState in jsonReactions) {
-            this.reactions[idState] = new System.Reaction(jsonReactions[idState]);
+            const reaction = new System.Reaction(jsonReactions[idState]);
+            reaction.event = this;
+            this.reactions[idState] = reaction;
         }
     }
 

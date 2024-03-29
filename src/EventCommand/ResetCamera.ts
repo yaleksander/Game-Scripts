@@ -12,6 +12,7 @@
 import { Base } from "./Base";
 import { MapObject } from "../Core";
 import { Scene } from "..";
+import { Inputs } from "../Common";
 
 /** @class
  *  An event command for reseting the camera.
@@ -34,8 +35,10 @@ class ResetCamera extends Base {
     update(currentState: Record<string, any>, object: MapObject, state: number): 
         number
     {
+        const initialH = Scene.Map.current.camera.horizontalAngle;
         Scene.Map.current.camera.initialize();
         Scene.Map.current.camera.update();
+        Inputs.updateLockedKeysAngles(initialH);
         return 1;
     }
 }

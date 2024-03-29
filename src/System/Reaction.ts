@@ -25,6 +25,7 @@ class Reaction extends Base {
     public idEvent: number;
     public blockingHero: boolean;
     public commands: Tree;
+    public event: System.Event;
 
     constructor(json?: Record<string, any>) {
         super(json);

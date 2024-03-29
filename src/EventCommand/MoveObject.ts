@@ -11,10 +11,10 @@
 
 import { Base } from "./Base";
 import { System, Datas, EventCommand, Scene, Manager, Core } from "../index";
-import { Enum, Utils, Mathf, Platform } from "../Common";
+import { Enum, Utils, Mathf, Platform, Inputs } from "../Common";
 import CommandMoveKind = Enum.CommandMoveKind;
 import Orientation = Enum.Orientation;
-import { MapObject, StructSearchResult, Game, Vector3 } from "../Core";
+import { MapObject, StructSearchResult, Game, Vector3, ReactionInterpreter, Camera } from "../Core";
 
 /** @class
  *  An event command for moving object.
@@ -22,6 +22,8 @@ import { MapObject, StructSearchResult, Game, Vector3 } from "../Core";
  *  @param {any[]} command - Direct JSON command to parse
  */
 class MoveObject extends Base {
+    public static lockedInputs = false; // TEMP: to remove after adding the locked option
+    public static followGrid = false; // TEMP: to remove after adding the option
 
     public objectID: System.DynamicValue;
     public isIgnore: boolean;
@@ -317,6 +319,24 @@ class MoveObject extends Base {
         }
     }
 
+    getLockedOrientation(orientation: Enum.Orientation) {
+        if (this.isCameraOrientation && Inputs.lockedKeys.length > 0) {
+            const currentEvent = ReactionInterpreter.currentReaction.
+                currentReaction.event;
+            if (currentEvent && currentEvent.idEvent === 3 && currentEvent.isSystem) {
+                const pressedKey = ReactionInterpreter.currentParameters[1].getValue();
+                const value = Inputs.lockedKeys.find(([k,]) => k === pressedKey);
+                if (value) {
+                    const [, lockedAngle] = value;
+                    let dif = lockedAngle - Scene.Map.current.camera.horizontalAngle;
+                    let angleDif = Math.round(dif / 90);
+                    return Mathf.mod(orientation + angleDif, 4);
+                }
+            }
+        }
+        return orientation;
+    }
+
     /** 
      *  Function to move north.
      *  @param {Record<string, any>} - currentState The current state of the event
@@ -331,8 +351,12 @@ class MoveObject extends Base {
         if (object.moveFrequencyTick > 0) {
             return false;
         }
-        let angle = this.isCameraOrientation ? Scene.Map.current.camera
-            .horizontalAngle : -90.0;
+        if (MoveObject.lockedInputs) {
+            orientation = this.getLockedOrientation(orientation);
+        }
+        const angle = this.isCameraOrientation ? (MoveObject.followGrid ? (Math
+            .round(Scene.Map.current.camera.horizontalAngle / 90) * 90) : Scene
+            .Map.current.camera.horizontalAngle) : -90.0;
         if (currentState.position === null && square) {
             currentState.position = object.getFuturPosition(orientation, Datas
                 .Systems.SQUARE_SIZE, angle)[0];

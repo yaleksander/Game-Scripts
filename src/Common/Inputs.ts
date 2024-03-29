@@ -9,10 +9,9 @@
         http://rpg-paper-maker.com/index.php/eula.
 */
 
-import { Datas, Manager } from "..";
+import { Datas, Manager, Scene } from "..";
 import { Main } from "../main";
 import { KeyEvent } from "./KeyEvent";
-import { Platform } from "./Platform";
 
 /**
  *  @class
@@ -20,7 +19,8 @@ import { Platform } from "./Platform";
  */
 class Inputs {
 
-    static keysPressed: number[] = [];
+    static keysPressed: number[] = []; // Currently pressed keys
+    static lockedKeys: [number, number][] = []; // Locked keys after a camera angle change
     static mouseLeftPressed: boolean = false;
     static mouseRightPressed: boolean = false;
     static mouseFirstPressX: number = -1;
@@ -85,6 +85,7 @@ class Inputs {
                 let key = event.keyCode;
                 // Remove this key from pressed keys list
                 Inputs.keysPressed.splice(Inputs.keysPressed.indexOf(key), 1);
+                Inputs.lockedKeys.splice(Inputs.lockedKeys.findIndex(([k,]) => k === key), 1);
         
                 // Call release RPM event
                 Manager.Stack.onKeyReleased(key);
@@ -191,6 +192,17 @@ class Inputs {
 			},
 			false
 		);
+    }
+
+    static updateLockedKeysAngles(angle: number) {
+        if (Scene.Map.current.camera.horizontalAngle !== angle) {
+            for (const key of Inputs.keysPressed) {
+                const value = Inputs.lockedKeys.find(([k,]) => k === key);
+                if (!value) {
+                    Inputs.lockedKeys.push([key, angle]);
+                }
+            }
+        }
     }
 }
 

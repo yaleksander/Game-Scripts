@@ -14,6 +14,8 @@
  *
  * @class ScreenResolution
  */
+
+
 class ScreenResolution {
     public static readonly SCREEN_X: number = 640;
     public static readonly SCREEN_Y: number = 480;

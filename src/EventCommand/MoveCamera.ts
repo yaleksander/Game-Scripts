@@ -10,7 +10,7 @@
 */
 
 import { Base } from "./Base";
-import { Utils, Mathf } from "../Common";
+import { Utils, Mathf, Inputs } from "../Common";
 import { System, Manager, Datas, Scene } from "../index";
 import { MapObject, StructSearchResult, Vector3 } from "../Core";
 
@@ -102,9 +102,10 @@ class MoveCamera extends Base {
         let finalV = operation(Scene.Map.current.camera.verticalAngle, 
             this.v.getValue());
         let finalDistance = operation(Scene.Map.current.camera.distance, 
-            this.distance.getValue());                   
+            this.distance.getValue());
         return {
             parallel: this.isWaitEnd,
+            initialH: Scene.Map.current.camera.horizontalAngle,
             finalPosition: new Vector3(finalX, finalY, finalZ),
             finalDifH: finalH - Scene.Map.current.camera.horizontalAngle,
             finalDifV: finalV - Scene.Map.current.camera.verticalAngle,
@@ -222,9 +223,9 @@ class MoveCamera extends Base {
 
                 // Update
                 Scene.Map.current.camera.update();
-
                 // If time = 0, then this is the end of the command
                 if (currentState.timeLeft === 0) {
+                    Inputs.updateLockedKeysAngles(currentState.initialH);
                     return 1;
                 }
             }
