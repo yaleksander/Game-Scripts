@@ -1079,7 +1079,7 @@ class Map extends Base {
         let angle = Math.atan2(vector.x, vector.z) + Math.PI;
 
         // Update the objects
-        if (!this.isBattleMap) {
+        if (Game.current !== null) {
             Game.current.hero.update(angle);
         }
         this.updatePortions(this, function(x: number, y: number, z: number, 
