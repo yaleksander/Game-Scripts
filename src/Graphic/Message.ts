@@ -479,8 +479,8 @@ class Message extends Graphic.Base {
         if (Datas.Systems.dbOptions.v_fPosAbove) {
             this.drawFaceset(x, y, w, h);
         }
-        let newX = x + ScreenResolution.getScreenMinXY(Constants.HUGE_SPACE) + 
-            (this.faceset.empty ? 0 : ScreenResolution.getScreenMinXY(Datas
+        let newX = x + ScreenResolution.getScreenX(Constants.HUGE_SPACE * 2) + 
+            (this.faceset.empty ? 0 : ScreenResolution.getScreenX(Datas
             .Systems.facesetScalingWidth));
         let newY = y + ScreenResolution.getScreenMinXY(Constants.HUGE_SPACE);
         let offsetY = 0;
