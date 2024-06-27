@@ -629,7 +629,7 @@ class MapObject {
             }
             this.mesh.position.set(this.position.x, this.position.y, this
                 .position.z);
-            this.mesh.renderOrder = 9999;
+            this.mesh.renderOrder = -1;
             this.boundingBoxSettings = objCollision[1][0];
             if (this.boundingBoxSettings) {
                 if (this.currentStateInstance.graphicID === 0) {
