@@ -722,7 +722,7 @@ class MoveObject extends Base {
         Record<string, any>): Orientation | boolean
     {
         if (object) {
-            object.lookAt(Orientation.North);
+            object.lookAt((Orientation.North + (this.isCameraOrientation ? Scene.Map.current.orientation + 2 : 0)) % 4);
             return true;
         }
         return Orientation.North;
@@ -739,7 +739,7 @@ class MoveObject extends Base {
         Record<string, any>): Orientation | boolean
     {
         if (object) {
-            object.lookAt(Orientation.South);
+            object.lookAt((Orientation.South + (this.isCameraOrientation ? Scene.Map.current.orientation + 2 : 0)) % 4);
             return true;
         }
         return Orientation.South;
@@ -756,7 +756,7 @@ class MoveObject extends Base {
         Record<string, any>): Orientation | boolean
     {
         if (object) {
-            object.lookAt(Orientation.West);
+            object.lookAt((Orientation.West + (this.isCameraOrientation ? Scene.Map.current.orientation + 2 : 0)) % 4);
             return true;
         }
         return Orientation.West;
@@ -773,7 +773,7 @@ class MoveObject extends Base {
         Record<string, any>): Orientation | boolean
     {
         if (object) {
-            object.lookAt(Orientation.East);
+            object.lookAt((Orientation.East + (this.isCameraOrientation ? Scene.Map.current.orientation + 2 : 0)) % 4);
             return true;
         }
         return Orientation.East;
@@ -918,7 +918,7 @@ class MoveObject extends Base {
                 options.sid = object.currentStateInstance.speedID;
             }
             object.currentStateInstance.indexX = object.frame.value;
-            object.currentStateInstance.indexY = object.orientation;
+            object.currentStateInstance.indexY = object.orientationEye;
             object.changeState();
         }
         return Orientation.None;
@@ -948,7 +948,7 @@ class MoveObject extends Base {
                 options.fid = object.currentStateInstance.frequencyID;
             }
             object.currentStateInstance.indexX = object.frame.value;
-            object.currentStateInstance.indexY = object.orientation;
+            object.currentStateInstance.indexY = object.orientationEye;
             object.changeState();
         }
         return Orientation.None;
