@@ -901,7 +901,7 @@ class Map extends Base {
         points.position.set(Scene.Map.current.camera.target.position.x, Scene
             .Map.current.camera.target.position.y, Scene.Map.current.camera.target
             .position.z)
-        points.renderOrder = 1000;
+        points.renderOrder = -1;
         this.scene.add(points);
         if (current) {
             this.weatherPoints = points;
